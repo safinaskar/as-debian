@@ -1,0 +1,9 @@
+PACKAGE='safinaskar/as-debian'
+ARCH='all'
+
+DEPENDS='prog:grep:grep prog:sed:sed meta:wget prog:gzip:gzip'
+BUILD_DEPENDS='prog:cmake:cmake prog:make:make'
+LIBS=''
+INSTALL='[ -e CMakeCache.txt ] && echo "Failed: CMakeCache.txt" && exit 1;'\
+\
+'cd "$BUILD" && cmake -DCMAKE_INSTALL_PREFIX="$PREFIX" "$SRC" && make install'

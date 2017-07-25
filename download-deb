@@ -1,0 +1,59 @@
+#!/bin/sh
+
+# Works with bo+
+# Works with any ubuntu distro
+# добавить вывод wget'а!
+# Добавить аналог apt-get source без необходимости менять sources.list
+
+# /var/lib/dpkg/av*? и вообще сделать утилиту более нормальной?
+
+set -e
+
+. as-debian
+
+USAGE="Usage: ${0##*/} [--wget] [-m MIRROR] [ -S DISTRO ] [ -s SECTION ] [ -a ARCH ] [ PACKAGE ]"
+
+SECTION=main
+WGET_FLAGS="-qc"
+
+# TODO: cannot shift so many
+while :; do
+	case "$1" in
+		-m) ARCHIVE_ROOT="$2"; shift; shift;;
+		-S) DISTRO="$2"; shift; shift;;
+		-s) SECTION="$2"; shift; shift;;
+		-a) ARCH="$2"; shift; shift;;
+		--wget) WGET_FLAGS="-c"; shift;;
+		-*) echo "${0##*/}: invalid option" >&2; echo "$USAGE" >&2; exit 1;;
+		*) break;;
+	esac
+done
+
+[ $# -gt 1 ] && echo "$USAGE" >&2 && exit 1
+
+PACKAGE="$1"
+
+[ -z "$DISTRO" ] && DISTRO="$(asutils_debian_distro)"
+[ -z "$ARCHIVE_ROOT" ] && ARCHIVE_ROOT="$(asutils_debian_archive_root "$DISTRO")"
+[ -z "$ARCH" ] && ARCH="$(asutils_debian_arch)"
+
+if [ ! -f Packages ]; then
+	URL="$ARCHIVE_ROOT/dists/$DISTRO/$SECTION/binary-$ARCH/Packages.gz"
+	echo "retrieving $URL"
+	! wget $WGET_FLAGS "$URL" && echo "${0##*/}: cannot download" >&2 && exit 1
+
+	echo "uncompressing"
+	gzip -df Packages.gz
+fi
+
+if [ -n "$PACKAGE" ]; then
+	echo "parsing"
+	FILENAME="$(grep -A 256 "^.ackage: $PACKAGE\$" Packages | grep -m 1 "^.ilename: " | sed 's/.ilename: //')"
+	[ -z "$FILENAME" ] && echo "${0##*/}: package not found" >&2 && exit 1
+
+	URL="$ARCHIVE_ROOT/$FILENAME"
+	echo "retrieving $URL"
+	! wget $WGET_FLAGS "$URL" && echo "${0##*/}: cannot download" >&2 && exit 1
+fi
+
+echo success

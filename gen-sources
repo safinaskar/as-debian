@@ -1,0 +1,74 @@
+#!/bin/sh
+
+set -e
+. as-debian
+
+ETC=false
+AS=false
+
+while :; do
+	case "$1" in
+		"-e")
+			ETC=true
+			shift
+			;;
+		"-a")
+			AS=true
+			shift
+			;;
+		"--help")
+			echo "Usage: ${0##*/} [-e] [-a] [DISTRO]" >&2
+			exit 1
+			;;
+		*)
+			break
+			;;
+	esac
+done
+
+[ $# -gt 1 ] && echo "Usage: ${0##*/} [-e] [-a] [DISTRO]" >&2 && exit 1
+
+DISTRO="$1"
+[ -z "$DISTRO" ] && DISTRO="$(asutils_debian_distro)"
+ARCHIVE_ROOT="$(asutils_debian_archive_root "$DISTRO")"
+LABEL="$(asutils_debian_label "$DISTRO")"
+
+if [ "$LABEL" = debian ]; then
+	cat <<- EOF > /etc/apt/sources.list
+	deb     $ARCHIVE_ROOT           $DISTRO           main
+	EOF
+
+	$ETC && cat <<- EOF >> /etc/apt/sources.list || :
+	deb-src $ARCHIVE_ROOT           $DISTRO           main
+
+	deb     http://security.debian.org $DISTRO/updates   main
+	deb-src http://security.debian.org $DISTRO/updates   main
+	EOF
+
+	$AS && cat <<- EOF >> /etc/apt/sources.list || :
+
+	deb     http://asd.safinaskar.com/asd $DISTRO main
+
+	deb     http://asd.safinaskar.com/asd $DISTRO-security main
+	EOF
+elif [ "$LABEL" = ubuntu ]; then
+	cat <<- EOF > /etc/apt/sources.list
+	deb     $ARCHIVE_ROOT           $DISTRO           main universe
+	EOF
+
+	$ETC && cat <<- EOF >> /etc/apt/sources.list || :
+	deb-src $ARCHIVE_ROOT           $DISTRO           main universe
+
+	deb     $ARCHIVE_ROOT           $DISTRO-security  main universe
+	deb-src $ARCHIVE_ROOT           $DISTRO-security  main universe
+	EOF
+
+	$AS && cat <<- EOF >> /etc/apt/sources.list || :
+
+	deb     http://asd.safinaskar.com/asu $DISTRO main
+
+	deb     http://asd.safinaskar.com/asu $DISTRO-security main
+	EOF
+else
+	echo "${0##*/}: $LABEL: unknown label" >&2
+fi

@@ -1,0 +1,65 @@
+# Неплохо бы перейти на /usr/share/distro-info/debian.csv
+
+Debian-0.93R6  http://archive.debian.org/debian-archive
+buzz           http://archive.debian.org/debian-archive
+rex            http://archive.debian.org/debian-archive
+bo             http://archive.debian.org/debian-archive
+hamm           http://archive.debian.org/debian-archive
+slink          http://archive.debian.org/debian-archive
+potato         http://archive.debian.org/debian-archive
+woody          http://archive.debian.org/debian-archive
+sarge          http://archive.debian.org/debian-archive
+etch           http://archive.debian.org/debian-archive
+lenny          http://archive.debian.org/debian-archive
+squeeze        http://ftp.debian.org/debian # 6
+wheezy         http://ftp.debian.org/debian # 7
+jessie         http://ftp.debian.org/debian # 8
+stretch        http://ftp.debian.org/debian # ~9
+buster         http://ftp.debian.org/debian # ~10
+
+oldstable      http://ftp.debian.org/debian
+stable         http://ftp.debian.org/debian
+testing        http://ftp.debian.org/debian
+unstable       http://ftp.debian.org/debian
+sid            http://ftp.debian.org/debian
+experimental   http://ftp.debian.org/debian
+
+
+warty          http://old-releases.ubuntu.com/ubuntu
+hoary          http://old-releases.ubuntu.com/ubuntu
+breezy         http://old-releases.ubuntu.com/ubuntu
+
+dapper         http://old-releases.ubuntu.com/ubuntu
+
+edgy           http://old-releases.ubuntu.com/ubuntu
+feisty         http://old-releases.ubuntu.com/ubuntu
+gutsy          http://old-releases.ubuntu.com/ubuntu
+
+hardy          http://old-releases.ubuntu.com/ubuntu
+
+intrepid       http://old-releases.ubuntu.com/ubuntu
+jaunty         http://old-releases.ubuntu.com/ubuntu
+karmic         http://old-releases.ubuntu.com/ubuntu
+
+lucid          http://mirror.yandex.ru/ubuntu        # 10.04
+
+maverick       http://old-releases.ubuntu.com/ubuntu # 10.10
+natty          http://old-releases.ubuntu.com/ubuntu # 11.04
+oneiric        http://old-releases.ubuntu.com/ubuntu # 11.10
+
+precise        http://mirror.yandex.ru/ubuntu        # 12.04
+
+quantal        http://old-releases.ubuntu.com/ubuntu # 12.10
+raring         http://old-releases.ubuntu.com/ubuntu # 13.04
+saucy          http://old-releases.ubuntu.com/ubuntu # 13.10
+
+trusty         http://mirror.yandex.ru/ubuntu        # 14.04
+
+utopic         http://old-releases.ubuntu.com/ubuntu # 14.10
+vivid          http://mirror.yandex.ru/ubuntu        # 15.04
+wily           http://mirror.yandex.ru/ubuntu        # 15.10
+
+xenial         http://mirror.yandex.ru/ubuntu        # 16.04
+
+
+devel          http://mirror.yandex.ru/ubuntu

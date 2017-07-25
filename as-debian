@@ -1,0 +1,58 @@
+#!/bin/sh
+# Shebang для редакторов
+
+# Хорошо бы разобраться с терминами distro, suite и так далее
+
+asutils_debian_distro(){
+	grep -m 1 '^deb .*://' /etc/apt/sources.list | sed 's/\[[^]]*\]//' | {
+		if ! read DEB ARCHIVE_ROOT DISTRO COMPONENTS; then
+			echo "asutils_debian_distro: cannot find distro information in /etc/apt/sources.list" >&2
+			exit 1
+		fi
+
+		DISTRO="${DISTRO%%/*}"
+		DISTRO="${DISTRO%%-*}"
+		echo "$DISTRO"
+	}
+}
+
+# Выдаёт сервер в интернете, не проверяя его на работоспособность
+# httpredir deprecated? Автор cdebootstrap жалуется, что он всё время перенаправляет на разные серваки и из-за этого cdebootstrap работает медленнее
+# Перейти на deb.debian.org?
+asutils_debian_archive_root(){
+	(
+		DISTRO="$1"
+		[ -z "$DISTRO" ] && DISTRO="$(asutils_debian_distro)"
+
+		# Здесь нельзя обратиться к файлу через ${0%/*}, т. к. мы shell library
+		sed 's/#.*$//' /opt/tpm-store/share/as-debian/mirrors | grep "^$DISTRO" | {
+			if ! read DISTRO2 ARCHIVE_ROOT; then
+				echo "asutils_debian_archive_root: $DISTRO: cannot find this distro in /opt/tpm-store/share/as-debian/mirrors" >&2
+				exit 1
+			fi
+
+			echo "$ARCHIVE_ROOT"
+		}
+	)
+}
+
+# Не факт, что это правильно работает с snapshot.debian.org. То же относится к list-of-systems
+asutils_debian_label(){
+	(
+		ARCHIVE_ROOT="$(asutils_debian_archive_root "$1")"
+		LABEL="${ARCHIVE_ROOT##*/}"
+		LABEL="${LABEL%%-*}"
+		echo "$LABEL"
+	)
+}
+
+asutils_debian_arch(){
+	if type dpkg > /dev/null 2>&1; then
+		dpkg --print-architecture
+	elif type udpkg > /dev/null 2>&1; then
+		udpkg --print-architecture
+	else
+		echo "asutils_debian_arch: dpkg nor udpkg not found, cannot determine architecture" >&2
+		exit 1
+	fi
+}
